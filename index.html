@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Vernika's Appreciation Quest 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff3d8b;
+            --hot: #ff0066;
+            --soft: #ff85b3;
+            --pale: #fff0f7;
+            --bg: #ffe4f0;
+            --dark: #7a0033;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Confetti rain */
+        .confetti {
+            position: fixed;
+            top: -20px;
+            font-size: 22px;
+            animation: fall linear infinite;
+            pointer-events: none;
+            z-index: 0;
+            user-select: none;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0.2; }
+        }
+
+        .wrapper {
+            width: 92%;
+            max-width: 480px;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 12px 50px rgba(255, 0, 102, 0.18);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            margin: 20px auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--hot), var(--pink), #ff9ec8);
+            padding: 22px 20px 18px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.5rem, 6vw, 2.2rem);
+            color: white;
+            text-shadow: 2px 3px 0 rgba(0,0,0,0.15);
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: clamp(0.75rem, 3vw, 0.9rem);
+            margin-top: 5px;
+            font-weight: 700;
+        }
+
+        /* Progress */
+        .progress-section {
+            padding: 14px 20px 0;
+        }
+        .level-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .level-badge {
+            background: linear-gradient(135deg, var(--hot), var(--pink));
+            color: white;
+            font-weight: 900;
+            font-size: 0.78rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+        .hearts-row span {
+            font-size: 1.1rem;
+            margin-left: 2px;
+        }
+        .progress-bar {
+            height: 12px;
+            background: #ffe0ee;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--hot), var(--pink));
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(.4,2,.6,1);
+        }
+
+        /* Game area */
+        .game-area {
+            padding: 0 18px 22px;
+        }
+
+        .question-card {
+            background: var(--pale);
+            border: 3px solid #ffb3d1;
+            border-radius: 20px;
+            padding: 18px 16px;
+            margin-bottom: 14px;
+        }
+        .question-card .emoji-big {
+            font-size: clamp(2rem, 8vw, 2.8rem);
+            display: block;
+            margin-bottom: 10px;
+        }
+        .question-card h3 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--dark);
+            font-size: clamp(1rem, 4.5vw, 1.25rem);
+            line-height: 1.35;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .option-btn {
+            background: white;
+            border: 2.5px solid #ffb3d1;
+            color: var(--dark);
+            padding: 12px 10px;
+            border-radius: 14px;
+            font-size: clamp(0.78rem, 3vw, 0.9rem);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            line-height: 1.3;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            touch-action: manipulation;
+        }
+        .option-btn:hover, .option-btn:focus {
+            background: linear-gradient(135deg, #ffe0ee, #ffb3d1);
+            border-color: var(--pink);
+            transform: translateY(-2px);
+        }
+        .option-btn:active {
+            transform: scale(0.97);
+        }
+        .option-btn.correct {
+            background: linear-gradient(135deg, #d4edda, #a8e6b3);
+            border-color: #28a745;
+            color: #155724;
+            pointer-events: none;
+        }
+        .option-btn.wrong {
+            background: #ffe5e5;
+            border-color: #ff6b6b;
+            color: #c0392b;
+            pointer-events: none;
+            animation: shake 0.4s ease;
+        }
+        .option-btn.disabled {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+        @keyframes shake {
+            0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)}
+        }
+
+        /* Result box */
+        .result-box {
+            background: linear-gradient(135deg, #fff0f7, #ffe0ee);
+            border: 3px solid var(--soft);
+            border-radius: 18px;
+            padding: 16px;
+            margin-top: 12px;
+            font-size: clamp(0.85rem, 3.2vw, 1rem);
+            color: var(--dark);
+            font-weight: 700;
+            line-height: 1.5;
+            animation: popIn 0.4s cubic-bezier(.4,2,.6,1);
+        }
+        @keyframes popIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .oops-text {
+            color: var(--pink);
+            font-weight: 700;
+            font-size: clamp(0.85rem, 3.2vw, 1rem);
+            margin-top: 10px;
+            text-align: center;
+            animation: wiggle 0.5s ease;
+        }
+        @keyframes wiggle {
+            0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-3deg)} 75%{transform:rotate(3deg)}
+        }
+
+        /* Buttons */
+        .action-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--hot), var(--pink));
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 16px;
+            font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+            font-family: 'Fredoka One', cursive;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 18px rgba(255,0,102,0.28);
+            touch-action: manipulation;
+        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(255,0,102,0.35); }
+        .action-btn:active { transform: scale(0.98); }
+
+        /* Intro screen */
+        .intro-card {
+            text-align: center;
+            padding: 10px 0 6px;
+        }
+        .intro-card .big-emoji { font-size: clamp(3rem, 12vw, 4.5rem); display: block; margin-bottom: 10px; }
+        .intro-card h2 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--dark);
+            font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+            margin-bottom: 10px;
+        }
+        .intro-card p {
+            color: #b0004e;
+            font-size: clamp(0.82rem, 3vw, 0.95rem);
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        /* Final screen */
+        .final-card {
+            background: linear-gradient(135deg, var(--hot), var(--pink), #ffb3d1);
+            border-radius: 20px;
+            padding: 22px 16px;
+            color: white;
+            text-align: center;
+        }
+        .final-card h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.4rem, 5.5vw, 2rem);
+            margin-bottom: 14px;
+            text-shadow: 1px 2px 0 rgba(0,0,0,0.15);
+        }
+        .final-card p {
+            font-size: clamp(0.85rem, 3.2vw, 1rem);
+            line-height: 1.7;
+            font-weight: 700;
+        }
+        .traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 14px 0;
+        }
+        .trait-pill {
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 20px;
+            padding: 5px 13px;
+            font-size: clamp(0.78rem, 2.8vw, 0.88rem);
+            font-weight: 800;
+            animation: bounce 1.5s ease infinite;
+        }
+        .trait-pill:nth-child(2n) { animation-delay: 0.3s; }
+        .trait-pill:nth-child(3n) { animation-delay: 0.6s; }
+        @keyframes bounce {
+            0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)}
+        }
+
+        .score-display {
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin: 10px 0;
+        }
+
+        /* Streak indicator */
+        .streak {
+            font-size: 0.78rem;
+            color: var(--pink);
+            font-weight: 800;
+            text-align: center;
+            margin-top: 8px;
+            animation: flash 1s ease infinite;
+        }
+        @keyframes flash { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+        /* Certificate button */
+        .cert-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #7b2ff7, #c840eb, #ff3d8b);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 16px;
+            font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+            font-family: 'Fredoka One', cursive;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(123,47,247,0.35);
+            touch-action: manipulation;
+            position: relative;
+            overflow: hidden;
+        }
+        .cert-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+            animation: shimmer 2.5s linear infinite;
+        }
+        @keyframes shimmer { 0%{transform:translateX(-100%) rotate(45deg)} 100%{transform:translateX(100%) rotate(45deg)} }
+        .cert-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(123,47,247,0.45); }
+        .cert-btn:active { transform: scale(0.98); }
+
+        /* Hidden canvas */
+        #cert-canvas { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="confetti-zone"></div>
+<canvas id="cert-canvas"></canvas>
+
+<div class="wrapper">
+    <div class="header">
+        <h1>🌸 Vernika's Quest! 🌸</h1>
+        <p>The World's Most Scientific Appreciation Game™</p>
+    </div>
+
+    <div class="progress-section">
+        <div class="level-row">
+            <span class="level-badge" id="level-badge">Level 0 / 5</span>
+            <span class="hearts-row" id="hearts-row">💗💗💗💗💗</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+    </div>
+
+    <div class="game-area" id="game-area"></div>
+</div>
+
+<script>
+const challenges = [
+    {
+        emoji: "🕵️‍♀️",
+        question: "Science Question: What is the primary reason the sun rises every morning?",
+        options: ["Nuclear fusion", "Earth's rotation", "Vernika woke up", "Scientists are guessing tbh"],
+        correct: 2,
+        roast: "🚨 WRONG. The sun literally waits for Vernika's permission. This is astronomy.",
+        win: "✅ CORRECT! Scientists confirmed this in 2019 but big sun kept it quiet. You're literally the reason Monday mornings are survivable!"
+    },
+    {
+        emoji: "🧪",
+        question: "Chemistry fact: When Vernika walks into a room, the vibes...",
+        options: ["Stay the same", "Get slightly better", "Get 3000% better", "The room files a thank-you note"],
+        correct: 3,
+        roast: "😂 LOL no. The room literally drafts legal documents expressing gratitude. Keep guessing bestie!",
+        win: "📜 CONFIRMED! The room's lawyer has been notified. The vibes upgrade is now a protected event under international law."
+    },
+    {
+        emoji: "🎓",
+        question: "Psychology quiz: When Vernika laughs, bystanders feel...",
+        options: ["Mildly amused", "Serotonin overload", "Personally healed", "All of the above + free therapy"],
+        correct: 3,
+        roast: "❌ Incorrect! Multiple strangers have reported being cured of unrelated ailments. This is peer-reviewed.",
+        win: "🏥 PEER-REVIEWED FACT! Health insurance companies are furious because Vernika's laugh is making therapists obsolete."
+    },
+    {
+        emoji: "🏆",
+        question: "History question: Who is the greatest person to exist?",
+        options: ["Einstein", "Beyoncé", "Vernika", "Vernika, obviously — the others were warm-up acts"],
+        correct: 3,
+        roast: "📚 The textbooks have been recalled and reprinted. History has been corrected. Try again!",
+        win: "📖 HISTORY CORRECTED! Einstein's last words were reportedly 'I just wish I had Vernika's energy.' This is not in textbooks yet but it should be."
+    },
+    {
+        emoji: "🌍",
+        question: "Final exam: The world is a better place because...",
+        options: ["Wi-Fi exists", "Pizza exists", "Vernika exists", "Vernika exists + she probably invented Wi-Fi and pizza too"],
+        correct: 3,
+        roast: "🙅‍♀️ Partially correct but incomplete. Vernika co-invented both in a past life. Full marks require the full truth.",
+        win: "🎓 FULL MARKS! Patent office is investigating. Historians are crying. Happy Women's Day to the actual inventor of joy! 🎉"
+    }
+];
+
+let level = 0;
+let lives = 5;
+let streak = 0;
+
+function makeLives() {
+    return Array.from({length: lives}, (_,i) => i < lives ? '💗' : '🖤').join('');
+}
+
+function updateProgress() {
+    const pct = (level / challenges.length) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('level-badge').textContent = `Level ${level} / ${challenges.length}`;
+    document.getElementById('hearts-row').textContent = makeLives();
+}
+
+function spawnConfetti(n = 12) {
+    const zone = document.getElementById('confetti-zone');
+    const emojis = ['💕','🌸','✨','🎉','💖','🌟','🥳','👑','💫','🎊'];
+    for (let i = 0; i < n; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.animationDuration = (3 + Math.random() * 4) + 's';
+        el.style.animationDelay = (Math.random() * 2) + 's';
+        el.style.fontSize = (16 + Math.random() * 18) + 'px';
+        zone.appendChild(el);
+        setTimeout(() => el.remove(), 7000);
+    }
+}
+
+function showIntro() {
+    document.getElementById('game-area').innerHTML = `
+        <div class="intro-card">
+            <span class="big-emoji">🎮</span>
+            <h2>Hey Vernika! Ready to learn some FACTS about yourself?</h2>
+            <p>
+                This is a 100% scientifically accurate game™<br>
+                All 5 questions are based on peer-reviewed research<br>
+                (the research being: you're amazing, duh)<br><br>
+                ⚠️ Warning: May cause uncontrollable smiling.<br>
+                Side effects include: feeling like royalty 👑
+            </p>
+            <button class="action-btn" onclick="showQuestion()">Let's GO! 🚀</button>
+        </div>
+    `;
+}
+
+function showQuestion() {
+    if (level >= challenges.length) { showFinal(); return; }
+    const c = challenges[level];
+    updateProgress();
+
+    document.getElementById('game-area').innerHTML = `
+        <div class="question-card">
+            <span class="emoji-big">${c.emoji}</span>
+            <h3>${c.question}</h3>
+        </div>
+        <div class="options" id="options">
+            ${c.options.map((opt, i) => `
+                <button class="option-btn" onclick="checkAnswer(${i})">${opt}</button>
+            `).join('')}
+        </div>
+        <div id="result-area"></div>
+        ${streak >= 2 ? `<p class="streak">🔥 ${streak} correct in a row! You're on FIRE!</p>` : ''}
+    `;
+}
+
+function checkAnswer(idx) {
+    const c = challenges[level];
+    const buttons = document.querySelectorAll('.option-btn');
+    const result = document.getElementById('result-area');
+
+    buttons.forEach((b, i) => {
+        b.disabled = true;
+        if (i === idx) {
+            b.classList.add(idx === c.correct ? 'correct' : 'wrong');
+        } else {
+            b.classList.add('disabled');
+        }
+        if (i === c.correct && idx !== c.correct) {
+            b.classList.remove('disabled');
+            b.classList.add('correct');
+        }
+    });
+
+    if (idx === c.correct) {
+        streak++;
+        spawnConfetti(8);
+        result.innerHTML = `
+            <div class="result-box">${c.win}</div>
+            <button class="action-btn" onclick="nextLevel()">
+                ${level + 1 < challenges.length ? 'Next question! ➡️' : 'See your results! 🏆'}
+            </button>
+        `;
+    } else {
+        lives = Math.max(0, lives - 1);
+        streak = 0;
+        updateProgress();
+        result.innerHTML = `
+            <p class="oops-text">😭 ${c.roast}</p>
+        `;
+        setTimeout(() => {
+            // re-enable remaining buttons
+            buttons.forEach((b, i) => {
+                if (i !== idx) {
+                    b.disabled = false;
+                    b.classList.remove('disabled', 'correct', 'wrong');
+                }
+            });
+            document.getElementById('result-area').innerHTML = '';
+        }, 1800);
+    }
+}
+
+function nextLevel() {
+    level++;
+    showQuestion();
+}
+
+function showFinal() {
+    updateProgress();
+    spawnConfetti(25);
+    const score = lives;
+    const msg = score === 5 ? "FLAWLESS VICTORY! You even knew YOU were amazing!" :
+                score >= 3 ? "Legend! A few detours but you got there, queen!" :
+                "Some bumps but you're here & that's all that matters 💖";
+
+    document.getElementById('game-area').innerHTML = `
+        <div class="final-card">
+            <h2>🏆 Quest Complete, Vernika! 🏆</h2>
+            <div class="score-display">
+                ${Array.from({length:5},(_,i)=> i < lives ? '💗' : '🤍').join('')}
+            </div>
+            <p style="font-size:clamp(0.88rem,3.2vw,1rem); margin-bottom:10px;">${msg}</p>
+            <p>On this Women's Day, science officially declares you:</p>
+            <div class="traits">
+                <span class="trait-pill">✨ Brilliant</span>
+                <span class="trait-pill">💪 Unstoppable</span>
+                <span class="trait-pill">😂 Hilarious</span>
+                <span class="trait-pill">👑 Iconic</span>
+                <span class="trait-pill">💖 Wonderful</span>
+                <span class="trait-pill">🌟 The GOAT</span>
+            </div>
+            <p>
+                These results have been submitted to the UN.<br>
+                A trophy is being 3D-printed.<br>
+                The world thanks you for existing. 🌍
+            </p>
+        </div>
+        <button class="cert-btn" onclick="downloadCertificate()">
+            🎓 Download Your Certificate! ✨
+        </button>
+        <button class="action-btn" onclick="restartGame()" style="margin-top:8px;">Play Again 🎮 (Totally not rigged)</button>
+    `;
+}
+
+function downloadCertificate() {
+    const canvas = document.getElementById('cert-canvas');
+    const W = 1400, H = 990;
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // ── Background gradient ──
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0,   '#fff5fb');
+    bg.addColorStop(0.5, '#fff0f7');
+    bg.addColorStop(1,   '#fce4f3');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Outer decorative border (thick) ──
+    const borderGrad = ctx.createLinearGradient(0, 0, W, H);
+    borderGrad.addColorStop(0,   '#ff0066');
+    borderGrad.addColorStop(0.5, '#ff69b4');
+    borderGrad.addColorStop(1,   '#c840eb');
+    ctx.strokeStyle = borderGrad;
+    ctx.lineWidth = 18;
+    ctx.strokeRect(24, 24, W - 48, H - 48);
+
+    // ── Inner thin border ──
+    ctx.strokeStyle = '#ff85b3';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(44, 44, W - 88, H - 88);
+
+    // ── Corner ornaments ──
+    function drawCornerOrnament(x, y, rot) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rot);
+        ctx.font = '62px serif';
+        ctx.fillStyle = '#ff0066';
+        ctx.globalAlpha = 0.75;
+        ctx.fillText('❧', -30, 30);
+        ctx.globalAlpha = 1;
+        ctx.restore();
+    }
+    drawCornerOrnament(68, 68, 0);
+    drawCornerOrnament(W - 68, 68, Math.PI / 2);
+    drawCornerOrnament(W - 68, H - 68, Math.PI);
+    drawCornerOrnament(68, H - 68, -Math.PI / 2);
+
+    // ── Top rose garland emoji row ──
+    const garland = ['🌹','✨','🌸','💐','🌺','✨','🌹','💮','🌸','✨','🌹'];
+    ctx.font = '36px serif';
+    const gW = garland.length * 64;
+    const gX = (W - gW) / 2;
+    garland.forEach((g, i) => ctx.fillText(g, gX + i * 64, 125));
+
+    // ── "CERTIFICATE OF" label ──
+    ctx.font = 'bold 28px Georgia, serif';
+    ctx.fillStyle = '#c840eb';
+    ctx.letterSpacing = '8px';
+    ctx.textAlign = 'center';
+    ctx.fillText('C E R T I F I C A T E   O F', W / 2, 195);
+
+    // ── Title: SUPERWOMAN ──
+    ctx.save();
+    const titleGrad = ctx.createLinearGradient(W/2 - 400, 0, W/2 + 400, 0);
+    titleGrad.addColorStop(0,   '#ff0066');
+    titleGrad.addColorStop(0.5, '#c840eb');
+    titleGrad.addColorStop(1,   '#ff0066');
+    ctx.fillStyle = titleGrad;
+    ctx.font = 'bold 110px Georgia, serif';
+    ctx.shadowColor = 'rgba(200,64,235,0.25)';
+    ctx.shadowBlur = 20;
+    ctx.fillText('SUPERWOMAN', W / 2, 310);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    // ── Decorative divider line ──
+    function drawDivider(y) {
+        const dg = ctx.createLinearGradient(160, y, W - 160, y);
+        dg.addColorStop(0, 'transparent');
+        dg.addColorStop(0.3, '#ff69b4');
+        dg.addColorStop(0.7, '#c840eb');
+        dg.addColorStop(1, 'transparent');
+        ctx.strokeStyle = dg;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(160, y);
+        ctx.lineTo(W - 160, y);
+        ctx.stroke();
+    }
+    drawDivider(336);
+
+    // ── "This certifies that" ──
+    ctx.font = 'italic 30px Georgia, serif';
+    ctx.fillStyle = '#a0004a';
+    ctx.textAlign = 'center';
+    ctx.fillText('This Officially Certifies That', W / 2, 400);
+
+    // ── Name: VERNIKA ──
+    ctx.save();
+    ctx.font = 'bold italic 96px Georgia, serif';
+    const nameGrad = ctx.createLinearGradient(W/2 - 300, 0, W/2 + 300, 0);
+    nameGrad.addColorStop(0, '#ff0066');
+    nameGrad.addColorStop(1, '#c840eb');
+    ctx.fillStyle = nameGrad;
+    ctx.shadowColor = 'rgba(255,0,102,0.2)';
+    ctx.shadowBlur = 16;
+    ctx.fillText('Vernika', W / 2, 505);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    // Underline beneath name
+    ctx.strokeStyle = '#ff69b4';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(W/2 - 200, 515);
+    ctx.lineTo(W/2 + 200, 515);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // ── Body text ──
+    ctx.font = 'italic 26px Georgia, serif';
+    ctx.fillStyle = '#7a0033';
+    ctx.textAlign = 'center';
+    ctx.fillText('has successfully completed the World\'s Most Scientifically Accurate™', W / 2, 570);
+    ctx.fillText('Appreciation Quest and is hereby recognized as a certified', W / 2, 606);
+
+    ctx.font = 'bold 34px Georgia, serif';
+    ctx.fillStyle = '#ff0066';
+    ctx.fillText('SUPERWOMAN, ICON & GLOBAL TREASURE', W / 2, 650);
+
+    drawDivider(680);
+
+    // ── Achievement badges row ──
+    const badges = [
+        { icon: '👑', label: 'Supreme Icon' },
+        { icon: '💪', label: 'Unstoppable Force' },
+        { icon: '🌟', label: 'Radiant Star' },
+        { icon: '🧠', label: 'Big Brain Energy' },
+        { icon: '💖', label: 'Pure Gold Heart' },
+    ];
+    const badgeW = (W - 200) / badges.length;
+    badges.forEach((b, i) => {
+        const bx = 100 + i * badgeW + badgeW / 2;
+
+        // Badge circle
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(bx, 740, 42, 0, Math.PI * 2);
+        const cg = ctx.createRadialGradient(bx, 740, 5, bx, 740, 42);
+        cg.addColorStop(0, '#fff0f7');
+        cg.addColorStop(1, '#ffd6ea');
+        ctx.fillStyle = cg;
+        ctx.fill();
+        ctx.strokeStyle = '#ff69b4';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.font = '30px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(b.icon, bx, 752);
+
+        ctx.font = 'bold 16px Georgia, serif';
+        ctx.fillStyle = '#a0004a';
+        ctx.fillText(b.label, bx, 802);
+    });
+
+    drawDivider(828);
+
+    // ── Date & signature row ──
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    // Left: issued date
+    ctx.textAlign = 'center';
+    ctx.font = 'italic 22px Georgia, serif';
+    ctx.fillStyle = '#a0004a';
+    ctx.fillText('Issued on:', W / 4, 876);
+    ctx.font = 'bold 22px Georgia, serif';
+    ctx.fillStyle = '#ff0066';
+    ctx.fillText(dateStr, W / 4, 902);
+
+    // Center seal emoji
+    ctx.font = '52px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🏅', W / 2, 910);
+
+    // Right: authority
+    ctx.textAlign = 'center';
+    ctx.font = 'italic 22px Georgia, serif';
+    ctx.fillStyle = '#a0004a';
+    ctx.fillText('Authorized by:', (W * 3) / 4, 876);
+    ctx.font = 'bold 22px Georgia, serif';
+    ctx.fillStyle = '#ff0066';
+    ctx.fillText('The Global Superwoman Council™', (W * 3) / 4, 902);
+
+    // ── Bottom garland ──
+    ctx.textAlign = 'center';
+    ctx.font = '28px serif';
+    const bGarland = ['💕','🌸','✨','💐','🌺','✨','💕','🌸','✨','💐','🌺'];
+    const bgW = bGarland.length * 52;
+    const bgX = (W - bgW) / 2;
+    bGarland.forEach((g, i) => ctx.fillText(g, bgX + i * 52, 958));
+
+    // ── Download ──
+    const link = document.createElement('a');
+    link.download = 'Vernika_Superwoman_Certificate.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
+
+function restartGame() {
+    level = 0; lives = 5; streak = 0;
+    showIntro();
+}
+
+// Background ambient confetti
+function ambientConfetti() {
+    spawnConfetti(3);
+    setTimeout(ambientConfetti, 4000);
+}
+
+window.onload = () => {
+    updateProgress();
+    showIntro();
+    setTimeout(ambientConfetti, 2000);
+};
+</script>
+</body>
+</html>
