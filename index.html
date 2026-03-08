@@ -20,7 +20,7 @@
         body {
             font-family: 'Nunito', sans-serif;
             background: var(--bg);
-            min-height: 100vh;
+            min-height: 90vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -363,7 +363,7 @@
 <div class="wrapper">
     <div class="header">
         <h1>🌸 Vernika's Quest! 🌸</h1>
-        <p>The World's Most Scientific Appreciation Game™</p>
+        <p>The World's Most Scientific Game™</p>
     </div>
 
     <div class="progress-section">
@@ -387,12 +387,12 @@ const challenges = [
         options: ["Nuclear fusion", "Earth's rotation", "Vernika woke up", "Scientists are guessing tbh"],
         correct: 2,
         roast: "🚨 WRONG. The sun literally waits for Vernika's permission. This is astronomy.",
-        win: "✅ CORRECT! Scientists confirmed this in 2019 but big sun kept it quiet. You're literally the reason Monday mornings are survivable!"
+        win: "✅ CORRECT! Scientists confirmed this in 2001 but big sun kept it quiet. You're literally the reason Monday mornings are survivable!"
     },
     {
         emoji: "🧪",
         question: "Chemistry fact: When Vernika walks into a room, the vibes...",
-        options: ["Stay the same", "Get slightly better", "Get 3000% better", "The room files a thank-you note"],
+        options: ["Stay the same", "Get slightly better", "Get 32% better", "The room files a thank-you note"],
         correct: 3,
         roast: "😂 LOL no. The room literally drafts legal documents expressing gratitude. Keep guessing bestie!",
         win: "📜 CONFIRMED! The room's lawyer has been notified. The vibes upgrade is now a protected event under international law."
@@ -402,13 +402,13 @@ const challenges = [
         question: "Psychology quiz: When Vernika laughs, bystanders feel...",
         options: ["Mildly amused", "Serotonin overload", "Personally healed", "All of the above + free therapy"],
         correct: 3,
-        roast: "❌ Incorrect! Multiple strangers have reported being cured of unrelated ailments. This is peer-reviewed.",
+        roast: "❌ Incorrect! Multiple strangers have reported being cured of depression. This is peer-reviewed.",
         win: "🏥 PEER-REVIEWED FACT! Health insurance companies are furious because Vernika's laugh is making therapists obsolete."
     },
     {
         emoji: "🏆",
         question: "History question: Who is the greatest person to exist?",
-        options: ["Einstein", "Beyoncé", "Vernika", "Vernika, obviously — the others were warm-up acts"],
+        options: ["Einstein", "Newton", "Tesla", "Vernika, obviously — the others were warm-up acts"],
         correct: 3,
         roast: "📚 The textbooks have been recalled and reprinted. History has been corrected. Try again!",
         win: "📖 HISTORY CORRECTED! Einstein's last words were reportedly 'I just wish I had Vernika's energy.' This is not in textbooks yet but it should be."
@@ -416,9 +416,9 @@ const challenges = [
     {
         emoji: "🌍",
         question: "Final exam: The world is a better place because...",
-        options: ["Wi-Fi exists", "Pizza exists", "Vernika exists", "Vernika exists + she probably invented Wi-Fi and pizza too"],
+        options: ["Chocolate exists", "Brownie exists", "Coke exists", "Vernika exists + she probably invented chocolate, diet coke and brownie too"],
         correct: 3,
-        roast: "🙅‍♀️ Partially correct but incomplete. Vernika co-invented both in a past life. Full marks require the full truth.",
+        roast: "🙅‍♀️ Partially correct but incomplete. Vernika co-invented all three in a past life. Full marks require the full truth.",
         win: "🎓 FULL MARKS! Patent office is investigating. Historians are crying. Happy Women's Day to the actual inventor of joy! 🎉"
     }
 ];
@@ -534,7 +534,7 @@ function checkAnswer(idx) {
                 }
             });
             document.getElementById('result-area').innerHTML = '';
-        }, 1800);
+        }, 4800);
     }
 }
 
@@ -700,11 +700,11 @@ function downloadCertificate() {
     ctx.setLineDash([]);
 
     // ── Body text ──
-    ctx.font = 'italic 26px Georgia, serif';
+    ctx.font = 'italic 20px Georgia, serif';
     ctx.fillStyle = '#7a0033';
     ctx.textAlign = 'center';
     ctx.fillText('has successfully completed the World\'s Most Scientifically Accurate™', W / 2, 570);
-    ctx.fillText('Appreciation Quest and is hereby recognized as a certified', W / 2, 606);
+    ctx.fillText('Quest and is hereby recognized as a certified', W / 2, 606);
 
     ctx.font = 'bold 34px Georgia, serif';
     ctx.fillStyle = '#ff0066';
@@ -714,11 +714,11 @@ function downloadCertificate() {
 
     // ── Achievement badges row ──
     const badges = [
-        { icon: '👑', label: 'Supreme Icon' },
-        { icon: '💪', label: 'Unstoppable Force' },
-        { icon: '🌟', label: 'Radiant Star' },
-        { icon: '🧠', label: 'Big Brain Energy' },
-        { icon: '💖', label: 'Pure Gold Heart' },
+        { icon: '💪', label: 'Unstoppable' },
+        { icon: '🌟', label: 'Radiant' },
+        { icon: '🧠', label: 'thodu impatient' },
+        { icon: '💖', label: 'Pure heart' },
+        { icon: '👑', label: 'Queen' },
     ];
     const badgeW = (W - 200) / badges.length;
     badges.forEach((b, i) => {
@@ -755,7 +755,7 @@ function downloadCertificate() {
 
     // Left: issued date
     ctx.textAlign = 'center';
-    ctx.font = 'italic 22px Georgia, serif';
+    ctx.font = 'italic 20px Georgia, serif';
     ctx.fillStyle = '#a0004a';
     ctx.fillText('Issued on:', W / 4, 876);
     ctx.font = 'bold 22px Georgia, serif';
@@ -772,7 +772,7 @@ function downloadCertificate() {
     ctx.font = 'italic 22px Georgia, serif';
     ctx.fillStyle = '#a0004a';
     ctx.fillText('Authorized by:', (W * 3) / 4, 876);
-    ctx.font = 'bold 22px Georgia, serif';
+    ctx.font = 'bold 20px Georgia, serif';
     ctx.fillStyle = '#ff0066';
     ctx.fillText('The Global Superwoman Council™', (W * 3) / 4, 902);
 
